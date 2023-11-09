@@ -25,7 +25,7 @@ export const useUsersStore = create<Store>((set) => ({
     const users = await res.json();
     set({ users: users.results, filteredUsers: users.results });
   },
-  handleSortUser: (type) => {
+  handleSortUser: (type) =>
     set((state) => {
       let filteredUsers;
       switch (type) {
@@ -40,9 +40,8 @@ export const useUsersStore = create<Store>((set) => ({
       }
 
       return { filteredUsers };
-    });
-  },
-  handleSearchUser: (name) => {
+    }),
+  handleSearchUser: (name) =>
     set((state) => {
       const users = state.users.filter((item) => {
         return (
@@ -51,6 +50,5 @@ export const useUsersStore = create<Store>((set) => ({
         );
       });
       return { filteredUsers: name !== "" ? users : state.users };
-    });
-  },
+    }),
 }));

@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
-import expandDownIcon from "../assets/expand-down.svg";
+import expandDownIcon from "../../assets/expand-down.svg";
 import classNames from "classnames";
 
 export type DropdownItem = {
