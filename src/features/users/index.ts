@@ -1,11 +1,18 @@
 import { create } from "zustand";
 import { IUser } from "@/entities/user";
+import { FilterTypeEnum } from "@/widgets/header/libs/mocks";
 
 interface Store {
   users: IUser[];
   filteredUsers: IUser[];
-  fetchUsers: ({ country, gender }: { country?: string; gender?: string }) => void;
-  handleSortUser: (type?: string) => void;
+  fetchUsers: ({
+    country,
+    gender,
+  }: {
+    country?: string | number;
+    gender?: string | number;
+  }) => void;
+  handleSortUser: (type?: string | number) => void;
   handleSearchUser: (name: string) => void;
 }
 
@@ -20,21 +27,28 @@ export const useUsersStore = create<Store>((set) => ({
   },
   handleSortUser: (type) => {
     set((state) => {
-      let users;
-      // TODO: lodash for sort oder by, switch case, use enum for older
-      if (type === "older") {
-        users = state.users.sort((a, b) => (a.dob.age < b.dob.age ? 1 : -1));
-      } else {
-        users = state.users.sort((a, b) => (a.dob.age > b.dob.age ? 1 : -1));
+      let filteredUsers;
+      switch (type) {
+        case FilterTypeEnum.older:
+          filteredUsers = state.users.sort((a, b) => (a.dob.age < b.dob.age ? 1 : -1));
+          break;
+        case FilterTypeEnum.younger:
+          filteredUsers = state.users.sort((a, b) => (a.dob.age > b.dob.age ? 1 : -1));
+          break;
+        default:
+          filteredUsers = state.users;
       }
 
-      return { filteredUsers: type ? users : state.users };
+      return { filteredUsers };
     });
   },
   handleSearchUser: (name) => {
     set((state) => {
       const users = state.users.filter((item) => {
-        return item.name.first.toLowerCase().includes(name) || item.name.last.toLowerCase().includes(name);
+        return (
+          item.name.first.toLowerCase().includes(name) ||
+          item.name.last.toLowerCase().includes(name)
+        );
       });
       return { filteredUsers: name !== "" ? users : state.users };
     });
